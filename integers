@@ -1,0 +1,84 @@
+CREATE OR REPLACE FUNCTION integers(p_a IN NUMBER, p_b IN NUMBER DEFAULT NULL)
+    RETURN numtab
+    PIPELINED
+IS
+    -- Return table collection of integers from 1 to A if only the first parameter is provided
+    --  If A is zero or negative, nothing will be returned
+    
+    -- If A and B are both provided then return all integers from A to B.
+    -- The order of the returned integers reflects if A<B then increasing, of A>B then decreasing
+
+
+    --                    .///.
+    --                   (0 o)
+    ---------------0000--(_)--0000---------------
+    --
+    --  Sean D. Stuber
+    --  sean.stuber@gmail.com
+    --
+    --             oooO      Oooo
+    --------------(   )-----(   )---------------
+    --             \ (       ) /
+    --              \_)     (_/
+    
+
+    i   INTEGER;
+BEGIN
+    CASE
+        WHEN p_b IS NULL
+        THEN
+            CASE
+                WHEN p_a <= 2147483647
+                THEN
+                    FOR i IN 1 .. p_a
+                    LOOP
+                        PIPE ROW (i);
+                    END LOOP;
+                ELSE
+                    i := 1;
+
+                    WHILE i <= p_a
+                    LOOP
+                        PIPE ROW (i);
+                        i := i + 1;
+                    END LOOP;
+            END CASE;
+        WHEN p_a <= p_b
+        THEN
+            CASE
+                WHEN p_a <= 2147483647 AND p_b <= 2147483647
+                THEN
+                    FOR i IN p_a .. p_b
+                    LOOP
+                        PIPE ROW (i);
+                    END LOOP;
+                ELSE
+                    i := p_a;
+
+                    WHILE i <= p_b
+                    LOOP
+                        PIPE ROW (i);
+                        i := i + 1;
+                    END LOOP;
+            END CASE;
+        ELSE
+            CASE
+                WHEN p_a <= 2147483647 AND p_b <= 2147483647
+                THEN
+                    FOR i IN reverse p_b .. p_a
+                    LOOP
+                        PIPE ROW (i);
+                    END LOOP;
+                ELSE
+                    i := p_a;
+
+                    WHILE i >= p_b
+                    LOOP
+                        PIPE ROW (i);
+                        i := i - 1;
+                    END LOOP;
+            END CASE;
+    END CASE;
+
+    RETURN;
+END;
