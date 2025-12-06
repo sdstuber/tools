@@ -1,0 +1,1 @@
+CREATE OR REPLACE TYPE vctab as table of varchar2(4000)
