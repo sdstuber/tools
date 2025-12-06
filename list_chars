@@ -1,0 +1,27 @@
+CREATE OR REPLACE FUNCTION list_chars(p_str IN VARCHAR2)
+    RETURN vctab
+    PIPELINED
+IS
+    -- Return a table collection of the characters in the string, one character per row.
+    -- For consistency with some of my other string functions it returns a VCTAB collection.
+    -- After using it for a while, maybe I'll change it to a collection of VARCHAR2(1) or CHAR(1) values instead.
+
+    --                    .///.
+    --                   (0 o)
+    ---------------0000--(_)--0000---------------
+    --
+    --  Sean D. Stuber
+    --  sean.stuber@gmail.com
+    --
+    --             oooO      Oooo
+    --------------(   )-----(   )---------------
+    --             \ (       ) /
+    --              \_)     (_/
+BEGIN
+    FOR i IN 1 .. LENGTH(p_str)
+    LOOP
+        PIPE ROW (SUBSTR(p_str, i, 1));
+    END LOOP;
+
+    RETURN;
+END;
